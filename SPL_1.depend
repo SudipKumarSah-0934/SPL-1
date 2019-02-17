@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1550067566 source:c:\users\sudip\desktop\coindp.cpp
+	<bits/stdc++.h>
+
+1550397001 source:c:\users\sudip\desktop\spl_1\code1.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<math.h>
+
