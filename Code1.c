@@ -77,7 +77,6 @@ while(1)
     }
 }
 return 1;
-
 }
 
 void printChar(char ch,int n)
