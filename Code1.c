@@ -3,18 +3,19 @@
 #include<stdlib.h>
 #include<math.h>
 #include <windows.h>
-
-
 #define Student struct Stud
 struct Stud
 {
     char name[1000];
+    char Gender[1000];
     char session[1000];
     int roll;
     char address[1000];
     int mobileNo[1000];
+    char email_Id[1000];
     char dateOfBirth[1000];//dd-mm-yyyy
-    char parentsName[1000];
+    char father_name[1000];
+    char mother_name[1000];
     char registrationNo[1000];
 
 };
@@ -55,7 +56,7 @@ void printChar(char ch,int n)
 }
 
 void printHead()
-{ system("cls");
+{ system("cls");//to run another program by passing a command line
 
 
 printf("\t\t\t\t\t[IIT] [STUDENT] [INFORMATION] [SYSTEM]\n\n\n");
@@ -71,11 +72,16 @@ Student s;
 fseek(fp,0,SEEK_END);
 while(another=='y'||another=='Y')
 {
-                                                //fgets takes an extra \n character as input
+         SetColor(85);                                       //fgets takes an extra \n character as input
     printf("\n\n\tEnter Full Name of Student\t:");
     fflush(stdin);
     fgets(s.name,1000,stdin);
     s.name[strlen(s.name)]='\0';
+
+     printf("\n\n\tEnter Gender\t:");
+    fflush(stdin);
+    fgets(s.Gender,1000,stdin);
+    s.Gender[strlen(s.Gender)]='\0';
 
       printf("\n\n\tEnter Session\t:");
     fflush(stdin);
@@ -88,22 +94,31 @@ while(another=='y'||another=='Y')
       printf("\n\n\tEnter Address\t:");
     fflush(stdin);
     fgets(s.address,1000,stdin);
-    s.name[strlen(s.name)-1]='\0';
+    s.address[strlen(s.address)-1]='\0';
 
       printf("\n\n\tEnter MobileNumber\t:");
     fflush(stdin);
     fgets(s.mobileNo,1000,stdin);
     s.mobileNo[strlen(s.mobileNo)-1]='\0';
 
-      printf("\n\n\tEnter Date Of Birth(dd-mm-yyyy)\t:");
+     printf("\n\n\tEnter Email ID\t:");
+    fflush(stdin);
+    fgets(s.email_Id,1000,stdin);
+    s.email_Id[strlen(s.email_Id)-1]='\0';
+
+    printf("\n\n\tEnter Date Of Birth(dd-mm-yyyy)\t:");
     fflush(stdin);
     fgets(s.dateOfBirth,1000,stdin);
     s.dateOfBirth[strlen(s.dateOfBirth)-1]='\0';
 
-      printf("\n\n\tEnter parent's Name\t:");
+      printf("\n\n\tEnter father's Name\t:");
     fflush(stdin);
-    fgets(s.parentsName,1000,stdin);
-    s.parentsName[strlen(s.parentsName)-1]='\0';
+    fgets(s.father_name,1000,stdin);
+    s.father_name[strlen(s.father_name)-1]='\0';
+     printf("\n\n\tEnter mother's Name\t:");
+    fflush(stdin);
+    fgets(s. mother_name,1000,stdin);
+    s. mother_name[strlen(s. mother_name)-1]='\0';
 
       printf("\n\n\tEnter registration Number\t:");
     fflush(stdin);
@@ -129,13 +144,17 @@ void displayList(FILE * fp)
     while((fread(&s,siz,1,fp))==1)
     {
         i++;
+        SetColor(244);
         printf("\n\t\tFullName : %s",s.name);
+        printf("\n\t\tGender : %s",s.Gender);
         printf("\n\t\tSession : %s",s.session);
         printf("\n\t\tRollNumber : %d",s.roll);
         printf("\n\t\tAddress : %s",s.address);
         printf("\n\t\tMobileNumber : %s",s.mobileNo);
+        printf("\n\t\tEmail_Id : %s",s.email_Id);
         printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
-        printf("\n\t\tParentsName : %s",s.parentsName);
+        printf("\n\t\tFather's Name : %s",s.father_name);
+        printf("\n\t\tMother's Name : %s",s.mother_name);
         printf("\n\t\tRegistrationNumber : %s\n\n",s.registrationNo);
 
 
@@ -175,14 +194,18 @@ while((fread(&s,siz,1,fp))==1)
 
 if(flag==1)
     {
+        SetColor(68);
     printf("\n\t\tFullName : %s",s.name);
-        printf("\n\n\t\tSession : %s",s.session);
+        printf("\n\t\tGender : %s",s.Gender);
+        printf("\n\t\tSession : %s",s.session);
         printf("\n\t\tRollNumber : %d",s.roll);
-        printf("\n\n\t\tAddress : %s",s.address);
+        printf("\n\t\tAddress : %s",s.address);
         printf("\n\t\tMobileNumber : %s",s.mobileNo);
-        printf("\n\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
-        printf("\n\t\tParent'sName : %s",s.parentsName);
-        printf("\n\n\t\tRegistrationNumber : %s",s.registrationNo);
+        printf("\n\t\tEmail_Id : %s",s.email_Id);
+        printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
+        printf("\n\t\tFather's Name : %s",s.father_name);
+        printf("\n\t\tMother's Name : %s",s.mother_name);
+        printf("\n\t\tRegistrationNumber : %s\n\n",s.registrationNo);
 
 
 
@@ -199,9 +222,9 @@ another=getchar();
 int main()
 {
 
-if((fp=fopen("studentInfo.txt","rb+"))==NULL)
+if((fp=fopen("newstudentInfo.txt","rb+"))==NULL)
 {
-    if((fp=fopen("studentInfo.txt","wb+"))==NULL)
+    if((fp=fopen("newstudentInfo.txt","wb+"))==NULL)
        {
            printf("can't open file");
            SetColor(34);
