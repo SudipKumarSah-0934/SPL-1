@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<math.h>
+#include <windows.h>
 
 #define Student struct Stud
 void add(FILE * fp);
@@ -23,7 +24,29 @@ struct Stud
     char registrationNo[1000];
 
 };
+void SetColor(int ForgC)//colour varies from 0 to 256
+{
+     WORD wColor;
+     //This handle is needed to get the current background attribute
 
+     HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+     CONSOLE_SCREEN_BUFFER_INFO csbi;
+     //csbi is used for wAttributes word
+
+     if(GetConsoleScreenBufferInfo(hStdOut, &csbi))
+     {
+          //To mask out all but the background attribute, and to add the color
+          wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+          SetConsoleTextAttribute(hStdOut, wColor);
+     }
+     return;
+}
+void SetBackground(int BackC)
+{
+     WORD wColor = ((BackC & 0x0F) << 4);
+     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), wColor);
+     return;
+}
 
 int main()
 {
@@ -37,10 +60,13 @@ if((fp=fopen("studentInfo.txt","rb+"))==NULL)
     if((fp=fopen("studentInfo.txt","wb+"))==NULL)
        {
            printf("can't open file");
+           SetColor(34);
+           printf("can't open file");
            return 0;
        }
 }
-
+SetBackground(10);
+SetColor(16);
 printHead();
 printf("\n\t\tpress any key to Enter");
 _getch();//reads the character without echoing it
@@ -49,8 +75,8 @@ while(1)
 {
     printHead();
     printf("\n\t");
-    printChar('-',64);
-
+    printf("******************************************");
+    SetColor(52);
     printf("\n\n\t\t\t1. ADD Student");
     printf("\n\n\t\t\t2. DISPLAY Student LIST");
     printf("\n\n\t\t\t3. Search Record");
@@ -77,6 +103,7 @@ while(1)
     }
 }
 return 1;
+
 }
 
 void printChar(char ch,int n)
@@ -89,12 +116,7 @@ void printChar(char ch,int n)
 
 void printHead()
 { system("cls");
-
-printf("\n\n\t");
-printf("######################################");
-printf("[IIT] [STUDENT] [INFORMATION] [SYSTEM]");
-printf("##################################");
-printf("\n");
+printf("\t\t\t\t\t[IIT] [STUDENT] [INFORMATION] [SYSTEM]\n\n\n");
 }
 
 
@@ -109,40 +131,40 @@ fseek(fp,0,SEEK_END);
 while(another=='y'||another=='Y')
 {
                                                 //fgets takes an extra \n character as input
-    printf("\n\n\t\tEnter Full Name of Student\t:");
+    printf("\n\n\tEnter Full Name of Student\t:");
     fflush(stdin);
     fgets(s.name,1000,stdin);
     s.name[strlen(s.name)]='\0';
 
-      printf("\n\n\t\tEnter Session\t:");
+      printf("\n\n\tEnter Session\t:");
     fflush(stdin);
     fgets(s.session,1000,stdin);
     s.session[strlen(s.session)-1]='\0';
 
-      printf("\n\n\t\tEnter Roll number \t:");
+      printf("\n\n\tEnter Roll number \t:");
     scanf("%d",&s.roll);
 
-      printf("\n\n\t\tEnter Address\t:");
+      printf("\n\n\tEnter Address\t:");
     fflush(stdin);
     fgets(s.address,1000,stdin);
     s.name[strlen(s.name)-1]='\0';
 
-      printf("\n\n\t\tEnter MobileNumber\t:");
+      printf("\n\n\tEnter MobileNumber\t:");
     fflush(stdin);
     fgets(s.mobileNo,1000,stdin);
     s.mobileNo[strlen(s.mobileNo)-1]='\0';
 
-      printf("\n\n\t\tEnter Date Of Birth(dd-mm-yyyy)\t:");
+      printf("\n\n\tEnter Date Of Birth(dd-mm-yyyy)\t:");
     fflush(stdin);
     fgets(s.dateOfBirth,1000,stdin);
     s.dateOfBirth[strlen(s.dateOfBirth)-1]='\0';
 
-      printf("\n\n\t\tEnter parent's Name\t:");
+      printf("\n\n\tEnter parent's Name\t:");
     fflush(stdin);
     fgets(s.parentsName,1000,stdin);
     s.parentsName[strlen(s.parentsName)-1]='\0';
 
-      printf("\n\n\t\tEnter registration Number\t:");
+      printf("\n\n\tEnter registration Number\t:");
     fflush(stdin);
     fgets(s.registrationNo,1000,stdin);
     s.registrationNo[strlen(s.registrationNo)-1]='\0';
@@ -157,6 +179,8 @@ while(another=='y'||another=='Y')
 }
 
 
+
+
 void displayList(FILE * fp)
 {   printHead();
     Student s;
@@ -167,14 +191,14 @@ void displayList(FILE * fp)
     while((fread(&s,siz,1,fp))==1)
     {
         i++;
-        printf("\n\t\tNAME : %s",s.name);
-        printf("\n\n\t\tSession : %s",s.session);
-        printf("\n\t\tNAME : %d",s.roll);
-        printf("\n\n\t\tAddress : %s",s.address);
+        printf("\n\t\tFullName : %s",s.name);
+        printf("\n\t\tSession : %s",s.session);
+        printf("\n\t\tRollNumber : %d",s.roll);
+        printf("\n\t\tAddress : %s",s.address);
         printf("\n\t\tMobileNumber : %s",s.mobileNo);
-        printf("\n\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
+        printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
         printf("\n\t\tParentsName : %s",s.parentsName);
-        printf("\n\n\t\tRegistrationNumber : %s\n\n",s.registrationNo);
+        printf("\n\t\tRegistrationNumber : %s\n\n",s.registrationNo);
 
 
  printf("****************************************************");
