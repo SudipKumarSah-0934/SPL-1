@@ -4,14 +4,8 @@
 #include<math.h>
 #include <windows.h>
 
+
 #define Student struct Stud
-void add(FILE * fp);
-void displayList(FILE * fp);
-void searchRecord(FILE *fp);
-void printChar(char ch,int n);
-void printHead();
-
-
 struct Stud
 {
     char name[1000];
@@ -24,6 +18,11 @@ struct Stud
     char registrationNo[1000];
 
 };
+FILE * fp;
+ Student s;
+int option;
+char another;
+
 void SetColor(int ForgC)//colour varies from 0 to 256
 {
      WORD wColor;
@@ -47,65 +46,6 @@ void SetBackground(int BackC)
      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), wColor);
      return;
 }
-
-int main()
-{
- FILE * fp;
- Student s;
-int option;
-char another;
-
-if((fp=fopen("studentInfo.txt","rb+"))==NULL)
-{
-    if((fp=fopen("studentInfo.txt","wb+"))==NULL)
-       {
-           printf("can't open file");
-           SetColor(34);
-           printf("can't open file");
-           return 0;
-       }
-}
-SetBackground(10);
-SetColor(16);
-printHead();
-printf("\n\t\tpress any key to Enter");
-_getch();//reads the character without echoing it
-
-while(1)
-{
-    printHead();
-    printf("\n\t");
-    printf("******************************************");
-    SetColor(52);
-    printf("\n\n\t\t\t1. ADD Student");
-    printf("\n\n\t\t\t2. DISPLAY Student LIST");
-    printf("\n\n\t\t\t3. Search Record");
-    printf("\n\n\t\t\t0. EXIT");
-
-    printf("\n\n\t\tEnter Your Option :--> ");
-    scanf("%d",&option);
-
-    switch(option)
-    {
-        case 0: return 1;
-                break;
-        case 1: add(fp);
-                break;
-        case 2: displayList(fp);
-                break;
-        case 3: searchRecord(fp);
-                break;
-        default: printf("\n\t\tYou Pressed wrong key");
-                  printf("\n\t\tProgram terminated");
-                  getch();
-                  exit(0);
-
-    }
-}
-return 1;
-
-}
-
 void printChar(char ch,int n)
 {
     while(n--)
@@ -116,9 +56,10 @@ void printChar(char ch,int n)
 
 void printHead()
 { system("cls");
+
+
 printf("\t\t\t\t\t[IIT] [STUDENT] [INFORMATION] [SYSTEM]\n\n\n");
 }
-
 
 void add(FILE * fp)
 {
@@ -177,9 +118,6 @@ while(another=='y'||another=='Y')
     another=getchar();
 }
 }
-
-
-
 
 void displayList(FILE * fp)
 {   printHead();
@@ -256,5 +194,62 @@ fflush(stdin);
 another=getchar();
 }
 }
+
+
+int main()
+{
+
+if((fp=fopen("studentInfo.txt","rb+"))==NULL)
+{
+    if((fp=fopen("studentInfo.txt","wb+"))==NULL)
+       {
+           printf("can't open file");
+           SetColor(34);
+           printf("can't open file");
+           return 0;
+       }
+}
+SetBackground(10);
+SetColor(16);
+printHead();
+printf("\n\t\tpress any key to Enter");
+_getch();//reads the character without echoing it
+
+while(1)
+{
+    printHead();
+    printf("\n\t");
+    printf("******************************************");
+    SetColor(52);
+    printf("\n\n\t\t\t1. ADD Student");
+    printf("\n\n\t\t\t2. DISPLAY Student LIST");
+    printf("\n\n\t\t\t3. Search Record");
+    printf("\n\n\t\t\t0. EXIT");
+
+    printf("\n\n\t\tEnter Your Option :--> ");
+    scanf("%d",&option);
+
+    switch(option)
+    {
+        case 0: return 1;
+                break;
+        case 1: add(fp);
+                break;
+        case 2: displayList(fp);
+                break;
+        case 3: searchRecord(fp);
+                break;
+        default: printf("\n\t\tYou Pressed wrong key");
+                  printf("\n\t\tProgram terminated");
+                  getch();
+                  exit(0);
+
+    }
+}
+return 1;
+
+}
+
+
 
 
