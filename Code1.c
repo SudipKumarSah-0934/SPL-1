@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include <windows.h>
-#define Student struct Stud
+#define Student s
 struct Stud
 {
     char name[1000];
@@ -18,9 +18,8 @@ struct Stud
     char mother_name[1000];
     char registrationNo[1000];
 
-};
+} s;
 FILE * fp;
- Student s;
 int option;
 char another;
 
@@ -59,7 +58,7 @@ void printHead()
 { system("cls");//to run another program by passing a command line
 
 
-printf("\t\t\t\t\t[IIT] [STUDENT] [INFORMATION] [SYSTEM]\n\n\n");
+printf("\t\t\t[IIT] [STUDENT] [INFORMATION] [SYSTEM]\n\n\n");
 }
 
 void add(FILE * fp)
@@ -67,7 +66,6 @@ void add(FILE * fp)
 printHead();
 
 char another='y';
-Student s;
 
 fseek(fp,0,SEEK_END);
 while(another=='y'||another=='Y')
@@ -136,7 +134,7 @@ while(another=='y'||another=='Y')
 
 void displayList(FILE * fp)
 {   printHead();
-    Student s;
+
     int i=0, siz=sizeof(s);
 
     rewind(fp);
@@ -144,17 +142,16 @@ void displayList(FILE * fp)
     while((fread(&s,siz,1,fp))==1)
     {
         i++;
-        SetColor(244);
         printf("\n\t\tFullName : %s",s.name);
         printf("\n\t\tGender : %s",s.Gender);
-        printf("\n\t\tSession : %s",s.session);
-        printf("\n\t\tRollNumber : %d",s.roll);
-        printf("\n\t\tAddress : %s",s.address);
+        printf("\n\t\tSession : %s\n",s.session);
+        printf("\n\t\tRollNumber : %d\n",s.roll);
+        printf("\n\t\tAddress : %s\n",s.address);
         printf("\n\t\tMobileNumber : %s",s.mobileNo);
-        printf("\n\t\tEmail_Id : %s",s.email_Id);
-        printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
-        printf("\n\t\tFather's Name : %s",s.father_name);
-        printf("\n\t\tMother's Name : %s",s.mother_name);
+        printf("\n\t\tEmail_Id : %s\n",s.email_Id);
+        printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s\n",s.dateOfBirth);
+        printf("\n\t\tFather's Name : %s\n",s.father_name);
+        printf("\n\t\tMother's Name : %s\n",s.mother_name);
         printf("\n\t\tRegistrationNumber : %s\n\n",s.registrationNo);
 
 
@@ -172,7 +169,7 @@ void searchRecord(FILE *fp)
 {printHead();
 
 int tempRoll,flag,siz,i;
-Student s;
+
 char another='y';
 
 siz=sizeof(s);
@@ -197,14 +194,14 @@ if(flag==1)
         SetColor(68);
     printf("\n\t\tFullName : %s",s.name);
         printf("\n\t\tGender : %s",s.Gender);
-        printf("\n\t\tSession : %s",s.session);
-        printf("\n\t\tRollNumber : %d",s.roll);
-        printf("\n\t\tAddress : %s",s.address);
+        printf("\n\t\tSession : %s\n",s.session);
+        printf("\n\t\tRollNumber : %d\n",s.roll);
+        printf("\n\t\tAddress : %s\n",s.address);
         printf("\n\t\tMobileNumber : %s",s.mobileNo);
-        printf("\n\t\tEmail_Id : %s",s.email_Id);
-        printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s",s.dateOfBirth);
-        printf("\n\t\tFather's Name : %s",s.father_name);
-        printf("\n\t\tMother's Name : %s",s.mother_name);
+        printf("\n\t\tEmail_Id : %s\n",s.email_Id);
+        printf("\n\t\tDateOfBirth(dd-mm-yyy) : %s\n",s.dateOfBirth);
+        printf("\n\t\tFather's Name : %s\n",s.father_name);
+        printf("\n\t\tMother's Name : %s\n",s.mother_name);
         printf("\n\t\tRegistrationNumber : %s\n\n",s.registrationNo);
 
 
@@ -222,9 +219,9 @@ another=getchar();
 int main()
 {
 
-if((fp=fopen("newstudentInfo.txt","rb+"))==NULL)
+if((fp=fopen("record.txt","rb+"))==NULL)
 {
-    if((fp=fopen("newstudentInfo.txt","wb+"))==NULL)
+    if((fp=fopen("record.txt","wb+"))==NULL)
        {
            printf("can't open file");
            SetColor(34);
@@ -270,5 +267,4 @@ while(1)
     }
 }
 return 1;
-    
 }
