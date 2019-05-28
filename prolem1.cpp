@@ -1,225 +1,477 @@
 #include <bits/stdc++.h>
+#include <conio.h>
 
 using namespace std;
-struct BplusTreeNode
+
+#define MAX 4
+#define MIN 2
+
+struct btreeNode {
+    int val[MAX + 1], count;
+    btreeNode *link[MAX + 1];
+};
+
+btreeNode *root;
+struct Info
 {
-    int *data;
     string name;
-    BplusTreeNode **child_ptr;
-    bool leaf;
-    int n;
-}*root = NULL, *np = NULL, *x = NULL;
-BplusTreeNode * init()
+    string Gender;
+    string session;
+    string address;
+    string mobileNo;
+    string email_Id;
+    string dateOfBirth;//dd-mm-yyyy
+    string father_name;
+    string mother_name;
+    string registrationNo;
+
+} s;
+FILE * fp;
+ ofstream myfile;
+void add()
 {
-    int i;
-    np = new BplusTreeNode;
-    np->data = new int[5];
-    np->child_ptr = new BplusTreeNode *[6];
-    np->leaf = true;
-    np->n = 0;
-    for (i = 0; i < 6; i++)
-    {
-        np->child_ptr[i] = NULL;
-    }
-    return np;
+
+
+char another='p';
+
+fseek(fp,0,SEEK_END);
+while(another=='p'||another=='p')
+{
+
+  cout<<"*****************************************************\n\n\n";
+  cout<<"enter your full name\t:";
+  cin>>s.name;
+  cout<<"enter your Gender\t:";
+  cin>>s.Gender;
+  cout<<"enter  Session\t:";
+  cin>>s.session;
+  cout<<"enter your present address\t:";
+  cin>>s.address;
+  cout<<"enter your mobile number\t:";
+  cin>>s.mobileNo;
+  cout<<"enter your email_ID\t:";
+  cin>>s.email_Id;
+  cout<<"enter your date of birth\t:";
+  cin>>s.dateOfBirth;
+  cout<<"enter your father's name\t:";
+  cin>>s.father_name;
+  cout<<"enter your mother's name\t:";
+  cin>>s.mother_name;
+  cout<<"enter your registration number\t:";
+  cin>>s.registrationNo;
+  myfile <<s.name<<"\n";
+  myfile <<s.Gender<<"\n";
+  myfile <<s.session<<"\n";
+  myfile <<s.address<<"\n";
+  myfile <<s.mobileNo<<"\n";
+  myfile <<s.email_Id<<"\n";
+  myfile <<s.dateOfBirth<<"\n";
+  myfile <<s.father_name<<"\n";
+  myfile<<s.mother_name<<"\n";
+  myfile <<s.registrationNo<<"\n";
+  myfile.close();                                       //fgets takes an extra \n character as input
+
+    printf("\n\n\t\twant to perform next operation type n or N\t:");
+    fflush(stdin);
+
+    another=getchar();
+}
+}
+/* creating new node */
+btreeNode * createNode(int val, btreeNode *child) {
+    btreeNode *newNode = new btreeNode;
+    newNode->val[1] = val;
+    newNode->count = 1;
+    newNode->link[0] = root;
+    newNode->link[1] = child;
+    return newNode;
 }
 
-
-
-void traversal(BplusTreeNode *p)
-{
-    cout<<endl;
-    int i;
-ofstream of;
-of.open("out.txt",ios::app);
-    for (i = 0; i < p->n; i++)
-    {
-        if (p->leaf == false)
-        {
-            traversal(p->child_ptr[i]);
-        }
-        of<<p->data[i]<<"\n";
-
+/* Places the value in appropriate position */
+void addValToNode(int val, int pos, btreeNode *node, btreeNode *child) {
+    int j = node->count;
+    while (j > pos) {
+        node->val[j + 1] = node->val[j];
+        node->link[j + 1] = node->link[j];
+        j--;
     }
-    if (p->leaf == false)
-    {
-        traversal(p->child_ptr[i]);
-    }
-    cout<<endl;
+    node->val[j + 1] = val;
+    node->link[j + 1] = child;
+    node->count++;
 }
-void sort(int *p, int n)
-{
-    int i, j, temp;
-    for (i = 0; i < n; i++)
-    {
-        for (j = i; j <= n; j++)
-        {
-            if (p[i] > p[j])
-            {
-                temp = p[i];
-                p[i] = p[j];
-                p[j] = temp;
-            }
-        }
-    }
-}
-int split_child(BplusTreeNode *x, int i)
-{
-    int j, mid;
-    BplusTreeNode *np1, *np3, *y;
-    np3 = init();
-    np3->leaf = true;
-    if (i == -1)
-    {
-        mid = x->data[2];
-        x->data[2] = 0;
-        x->n--;
-        np1 = init();
-        np1->leaf = false;
-        x->leaf = true;
-        for (j = 3; j < 5; j++)
-        {
-            np3->data[j - 3] = x->data[j];
-            np3->child_ptr[j - 3] = x->child_ptr[j];
-            np3->n++;
-            x->data[j] = 0;
-            x->n--;
-        }
-        for(j = 0; j < 6; j++)
-        {
-            x->child_ptr[j] = NULL;
-        }
-        np1->data[0] = mid;
-        np1->child_ptr[np1->n] = x;
-        np1->child_ptr[np1->n + 1] = np3;
-        np1->n++;
-        root = np1;
-    }
+
+/* split the node */
+void splitNode(int val, int *parentVal, int pos, btreeNode *node,btreeNode *child, btreeNode **newNode) {
+    int median, j;
+
+    if (pos > MIN)
+        median = MIN + 1;
     else
-    {
-        y = x->child_ptr[i];
-        mid = y->data[2];
-        y->data[2] = 0;
-        y->n--;
-        for (j = 3; j < 5; j++)
-        {
-            np3->data[j - 3] = y->data[j];
-            np3->n++;
-            y->data[j] = 0;
-            y->n--;
-        }
-        x->child_ptr[i + 1] = y;
-        x->child_ptr[i + 1] = np3;
+        median = MIN;
+
+    *newNode = new btreeNode;
+    j = median + 1;
+    while (j <= MAX) {
+        (*newNode)->val[j - median] = node->val[j];
+        (*newNode)->link[j - median] = node->link[j];
+        j++;
     }
-    return mid;
-}
-void insert(int a,string name)
-{
-    int i, temp;
-    x = root;
-    if (x == NULL)
-    {
-        root = init();
-        x = root;
+    node->count = median;
+    (*newNode)->count = MAX - median;
+
+    if (pos <= MIN) {
+        addValToNode(val, pos, node, child);
     }
-    else
-    {
-        if (x->leaf == true && x->n == 5)
-        {
-            temp = split_child(x, -1);
-            x = root;
-            for (i = 0; i < (x->n); i++)
-            {
-                if ((a > x->data[i]) && (a < x->data[i + 1]))
-                {
-                    i++;
-                    break;
-                }
-                else if (a < x->data[0])
-                {
-                    break;
-                }
-                else
-                {
-                    continue;
-                }
-            }
-            x = x->child_ptr[i];
-        }
-        else
-        {
-            while (x->leaf == false)
-            {
-            for (i = 0; i < (x->n); i++)
-            {
-                if ((a > x->data[i]) && (a < x->data[i + 1]))
-                {
-                    i++;
-                    break;
-                }
-                else if (a < x->data[0])
-                {
-                    break;
-                }
-                else
-                {
-                    continue;
-                }
-            }
-                if ((x->child_ptr[i])->n == 5)
-                {
-                    temp = split_child(x, i);
-                    x->data[x->n] = temp;
-                    x->n++;
-                    continue;
-                }
-                else
-                {
-                    x = x->child_ptr[i];
-                }
-            }
-        }
+    else {
+        addValToNode(val, pos - median, *newNode, child);
     }
-    x->data[x->n] = a;
-    sort(x->data, x->n);
-    x->n++;
-}
-void display(){
-  string line;
-  ifstream myfile ("out.txt");
-  if (myfile.is_open())
-  {
-    while ( getline (myfile,line) )
-    {
-      cout << line << '\n';
-    }
-    myfile.close();
-  }
+    *parentVal = node->val[node->count];
+    (*newNode)->link[0] = node->link[node->count];
+    node->count--;
 }
 
+/* sets the value val in the node */
+int setValueInNode(int val, int *parentVal,btreeNode *node, btreeNode **child) {
+
+    int pos;
+    if (!node) {
+        *parentVal = val;
+        *child = NULL;
+        return 1;
+    }
+
+    if (val < node->val[1]) {
+        pos = 0;
+    }
+    else {
+        for (pos = node->count;
+            (val < node->val[pos] && pos > 1); pos--);
+        if (val == node->val[pos]) {
+            cout<<"Duplicates not allowed\n";
+            return 0;
+        }
+    }
+    if (setValueInNode(val, parentVal, node->link[pos], child)) {
+        if (node->count < MAX) {
+            addValToNode(*parentVal, pos, node, *child);
+        }
+        else {
+            splitNode(*parentVal, parentVal, pos, node, *child, child);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* insert val in B-Tree */
+void insertion(int val) {
+    int flag, i;
+    btreeNode *child;
+
+    flag = setValueInNode(val, &i, root, &child);
+    if (flag)
+        root = createNode(i, child);
+
+}
+
+/* copy successor for the value to be deleted */
+void copySuccessor(btreeNode *myNode, int pos) {
+    btreeNode *dummy;
+    dummy = myNode->link[pos];
+
+    for (; dummy->link[0] != NULL;)
+        dummy = dummy->link[0];
+    myNode->val[pos] = dummy->val[1];
+
+}
+
+/* removes the value from the given node and rearrange values */
+void removeVal(btreeNode *myNode, int pos) {
+    int i = pos + 1;
+    while (i <= myNode->count) {
+        myNode->val[i - 1] = myNode->val[i];
+        myNode->link[i - 1] = myNode->link[i];
+        i++;
+    }
+    myNode->count--;
+}
+
+/* shifts value from parent to right child */
+void doRightShift(btreeNode *myNode, int pos) {
+    btreeNode *x = myNode->link[pos];
+    int j = x->count;
+
+    while (j > 0) {
+        x->val[j + 1] = x->val[j];
+        x->link[j + 1] = x->link[j];
+    }
+    x->val[1] = myNode->val[pos];
+    x->link[1] = x->link[0];
+    x->count++;
+
+    x = myNode->link[pos - 1];
+    myNode->val[pos] = x->val[x->count];
+    myNode->link[pos] = x->link[x->count];
+    x->count--;
+    return;
+}
+
+/* shifts value from parent to left child */
+void doLeftShift(btreeNode *myNode, int pos) {
+    int j = 1;
+    btreeNode *x = myNode->link[pos - 1];
+
+    x->count++;
+    x->val[x->count] = myNode->val[pos];
+    x->link[x->count] = myNode->link[pos]->link[0];
+
+    x = myNode->link[pos];
+    myNode->val[pos] = x->val[1];
+    x->link[0] = x->link[1];
+    x->count--;
+
+    while (j <= x->count) {
+        x->val[j] = x->val[j + 1];
+        x->link[j] = x->link[j + 1];
+        j++;
+    }
+    return;
+}
+
+/* merge nodes */
+void mergeNodes(btreeNode *myNode, int pos) {
+    int j = 1;
+    btreeNode *x1 = myNode->link[pos], *x2 = myNode->link[pos - 1];
+
+    x2->count++;
+    x2->val[x2->count] = myNode->val[pos];
+    x2->link[x2->count] = myNode->link[0];
+
+    while (j <= x1->count) {
+        x2->count++;
+        x2->val[x2->count] = x1->val[j];
+        x2->link[x2->count] = x1->link[j];
+        j++;
+    }
+
+    j = pos;
+    while (j < myNode->count) {
+        myNode->val[j] = myNode->val[j + 1];
+        myNode->link[j] = myNode->link[j + 1];
+        j++;
+    }
+    myNode->count--;
+    free(x1);
+}
+
+/* adjusts the given node */
+void adjustNode(btreeNode *myNode, int pos) {
+    if (!pos) {
+        if (myNode->link[1]->count > MIN) {
+            doLeftShift(myNode, 1);
+        }
+        else {
+            mergeNodes(myNode, 1);
+        }
+    }
+    else {
+        if (myNode->count != pos) {
+            if (myNode->link[pos - 1]->count > MIN) {
+                doRightShift(myNode, pos);
+            }
+            else {
+                if (myNode->link[pos + 1]->count > MIN) {
+                    doLeftShift(myNode, pos + 1);
+                }
+                else {
+                    mergeNodes(myNode, pos);
+                }
+            }
+        }
+        else {
+            if (myNode->link[pos - 1]->count > MIN)
+                doRightShift(myNode, pos);
+            else
+                mergeNodes(myNode, pos);
+        }
+    }
+}
+
+/* delete val from the node */
+int delValFromNode(int val,btreeNode *myNode) {
+    int pos, flag = 0;
+    if (myNode) {
+        if (val < myNode->val[1]) {
+            pos = 0;
+            flag = 0;
+        }
+        else {
+            for (pos = myNode->count;
+                (val < myNode->val[pos] && pos > 1); pos--);
+            if (val == myNode->val[pos]) {
+                flag = 1;
+            }
+            else {
+                flag = 0;
+            }
+        }
+        if (flag) {
+            if (myNode->link[pos - 1]) {
+                copySuccessor(myNode, pos);
+                flag = delValFromNode(myNode->val[pos], myNode->link[pos]);
+                if (flag == 0) {
+                    cout<<"Given data is not present in B-Tree\n";
+                }
+            }
+            else {
+                removeVal(myNode, pos);
+            }
+        }
+        else {
+            flag = delValFromNode(val, myNode->link[pos]);
+        }
+        if (myNode->link[pos]) {
+            if (myNode->link[pos]->count < MIN)
+                adjustNode(myNode, pos);
+        }
+    }
+    return flag;
+}
+
+/* delete val from B-tree */
+void deletion(int val,btreeNode *myNode) {
+    btreeNode *tmp;
+    if (!delValFromNode(val, myNode)) {
+        cout<<"Entered value related data is not present in B-Tree\n";
+        return;
+    }
+    else {
+        if (myNode->count == 0) {
+            tmp = myNode;
+            myNode = myNode->link[0];
+            cout<<"roll number with data is found to deleted";
+             free(tmp);
+
+        }
+    }
+    root = myNode;
+    return;
+}
+void dataDelete(){
+
+string deleteline;
+string line;
+
+ifstream fin;
+fin.open("final.txt");
+ofstream temp;
+temp.open("temp1.txt");
+cout << "Which line do you want to remove? ";
+cin >> deleteline;
+
+
+while (getline(fin,line))
+{
+    size_t found = line.find(deleteline);
+  if (found!=string::npos)
+    cout << "first 'needle' found at: " << found << '\n';
+
+}
+
+   /* if (line != deleteline)
+    {
+    temp << line << endl;
+
+    }*/
+
+
+
+/*
+remove("final.txt");
+rename("temp1.txt","final.txt");
+cout<<"successfully deleted!!!";
+*/
+temp.close();
+fin.close();
+
+}
+
+/* search val in B-Tree */
+void searching(int val, int *pos,btreeNode *myNode) {
+    if (!myNode) {
+        return;
+    }
+
+    if (val < myNode->val[1]) {
+        *pos = 0;
+
+
+    }
+    else {
+        for (*pos = myNode->count;
+            (val < myNode->val[*pos] && *pos > 1); (*pos)--);
+        if (val == myNode->val[*pos]) {
+            cout << "Given data is Found\n";
+            return;
+        }
+    }
+    searching(val, pos, myNode->link[*pos]);
+    cout << "Given data is not Found\n";
+    return;
+}
+int searchForData(){
+    FILE *fileptr;
+    int count_lines = 0;
+    char chr;
+    fileptr = fopen("example1.txt", "r");
+   //extract character from file and store in chr
+    chr = getc(fileptr);
+    while (chr != EOF)
+    {
+        //Count whenever new line is encountered
+        if (chr == '\n')
+        {
+
+            count_lines = count_lines + 1;
+        }
+        //take next character from file.
+        chr = getc(fileptr);
+    }
+    fclose(fileptr); //close file.
+    printf("There are %d lines in a file\n", count_lines);
+    return 0;
+}
 
 int main() {
-    int val, option;string name;
+    int rol, option;
     while (true) {
-        cout<<"1. Insertion\t2.  Traversal\n";
-        cout<<"3.display\t4. Exit\nEnter your choice: ";
+        cout<<"1. Insertion\t2. Deletion\n";
+        cout<<"3. Searching\t";
+        cout<<"4. Exit\nEnter your choice: ";
         cin >> option;
         cout << endl;
         switch (option) {
         case 1:
             cout<<"Enter your roll:";
-            cin >> val;
-            cout<<"enter your name";
-            cin>>name;
-            insert(val,name);
+            cin >> rol;
+            myfile.open ("final.txt",ios::app);
+            myfile<<rol<<"\n";
+            insertion(rol);
+            add();
             break;
         case 2:
-            traversal(root);
+            cout<<"Enter the roll to delete:";
+            cin >> rol;
+            deletion(rol, root);
+            dataDelete();
             break;
         case 3:
-            display();
+            cout<<"Enter the roll for search:";
+            cin >> rol;
+            searching(rol, &option, root);
+            break;
         case 4:
-            exit(0);
+            searchForData();
         }
 
     }
