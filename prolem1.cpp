@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <conio.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -28,16 +29,48 @@ struct Info
 } s;
 FILE * fp;
  ofstream myfile;
+
+
+ void SetColor(int ForgC)//colour varies from 0 to 256
+{
+     WORD wColor;
+     //This handle is needed to get the current background attribute
+
+     HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+     CONSOLE_SCREEN_BUFFER_INFO csbi;
+     //csbi is used for wAttributes word
+
+     if(GetConsoleScreenBufferInfo(hStdOut, &csbi))
+     {
+          //To mask out all but the background attribute, and to add the color
+          wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+          SetConsoleTextAttribute(hStdOut, wColor);
+     }
+     return;
+}
+void SetBackground(int BackC)
+{
+     WORD wColor = ((BackC & 0x0F) << 4);
+     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), wColor);
+     return;
+}
+void printChar(char ch,int n)
+{
+    while(n--)
+    {
+        putchar(ch);
+    }
+}
+
 void add()
 {
-
-
 char another='p';
 
 fseek(fp,0,SEEK_END);
 while(another=='p'||another=='p')
 {
 
+ SetColor(85);
   cout<<"*****************************************************\n\n\n";
   cout<<"enter your full name\t:";
   cin>>s.name;
@@ -363,7 +396,7 @@ string deleteline;
 string line;
 
 ifstream fin;
-fin.open("final.txt");
+fin.open("program.txt");
 ofstream temp;
 temp.open("temp1.txt");
 cout << "Which line do you want to remove? ";
@@ -387,8 +420,8 @@ while (getline(fin,line))
 
 
 /*
-remove("final.txt");
-rename("temp1.txt","final.txt");
+remove("program.txt");
+rename("temp1.txt","program.txt");
 cout<<"successfully deleted!!!";
 */
 temp.close();
@@ -443,8 +476,11 @@ int searchForData(){
 }
 
 int main() {
+
+
     int rol, option;
     while (true) {
+
         cout<<"1. Insertion\t2. Deletion\n";
         cout<<"3. Searching\t";
         cout<<"4. Exit\nEnter your choice: ";
@@ -452,26 +488,31 @@ int main() {
         cout << endl;
         switch (option) {
         case 1:
+             SetColor(5);
             cout<<"Enter your roll:";
             cin >> rol;
-            myfile.open ("final.txt",ios::app);
+            myfile.open ("program.txt",ios::app);
             myfile<<rol<<"\n";
             insertion(rol);
             add();
             break;
         case 2:
+            SetColor(2);
             cout<<"Enter the roll to delete:";
             cin >> rol;
             deletion(rol, root);
             dataDelete();
             break;
         case 3:
+            SetColor(6);
             cout<<"Enter the roll for search:";
             cin >> rol;
             searching(rol, &option, root);
             break;
         case 4:
-            searchForData();
+            SetColor(4);
+           cout<<"\n\n\nProgram terminated";
+           exit(0);
         }
 
     }
